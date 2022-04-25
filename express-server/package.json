@@ -1,0 +1,15 @@
+{
+  "name": "express-server",
+  "version": "1.0.0",
+  "description": "learning to create server using express",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "lency bhalodiya",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
