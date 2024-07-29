@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const { logger } = require('./logger/logger');
-
+const config = require('./config/config');
 
 const morganFormat = ":method :url :status :response-time ms";
 
@@ -26,6 +26,6 @@ app.get('/', (req, res) => {
   res.status(200).json({ status: 'ok' })
 })  
 
-app.listen('3000', () => {
-  logger.info('server started on port 3000');
+app.listen(config.PORT, () => {
+  logger.info(`server started on port ${config.PORT}`,);
 })
