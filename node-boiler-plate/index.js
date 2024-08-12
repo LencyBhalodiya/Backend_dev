@@ -1,10 +1,14 @@
 import express from 'express';
-import { config } from './config/config.js'
+import { morganLogger } from './config/logger.js'
 
 const app = express();
-console.log(config)
 
-app.listen(config.PORT, () => {
-    console.log(`server started at PORT: ${config.PORT} `)
+app.use(morganLogger)
+
+app.get('*', (req, res) => {
+    res.status(200).json({ status: 'ok' })
 })
 
+
+
+export default app;
