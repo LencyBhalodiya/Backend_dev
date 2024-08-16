@@ -7,6 +7,14 @@ class ApiResponseHandler {
     }
 }
 
+/**
+ * Send an email
+ * @param {Obj} to
+ * @param {number} statusCode
+ * @param {string} data
+ * @param {string} message
+ * @returns {Promise}
+ */
 function ApiResponse(res, statusCode, data, message = "Success") {
     return res.status(statusCode).json(new ApiResponseHandler(statusCode, data, message))
 }

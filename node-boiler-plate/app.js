@@ -2,10 +2,9 @@ import express from 'express';
 import { morganLogger } from './config/logger.js'
 import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
-import httpStatus from 'http-status';
 import cors from 'cors'
-import { ApiError } from './utils/ApiErrorHandler.js';
-import { ApiResponse } from './utils/APIResponseHandler.js';
+import { ApiResponse } from './utils/index.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
@@ -13,14 +12,16 @@ const app = express();
 app.use(helmet());
 
 // parse json request body
-app.use(express.json());
+app.use(express.json({ limit: "16kb" }))
 
 // sanitize request data
 app.use(mongoSanitize());
 
 // enable cors
-app.use(cors());
-app.options('*', cors());
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}))
 
 // set logger for nodejs
 app.use(morganLogger)
@@ -28,10 +29,9 @@ app.use(morganLogger)
 app.get('/', (req, res) => {
     ApiResponse(res, 200, { statuss: 'okk' })
 })
-// send back a 404 error for any unknown api request
-app.use((req, res, next) => {
-    next(new ApiError(httpStatus.NOT_FOUND, 'Not Found'))
-})
+
+// global error handler
+app.use(errorHandler)
 
 
 export default app;
