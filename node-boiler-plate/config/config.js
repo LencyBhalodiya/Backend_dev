@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import Joi from 'joi';
 
 const __dirname = fileURLToPath(import.meta.url);
-const envPath = join(__dirname, `../.env.${process.env.NODE_ENV}`)
+const envPath = join(__dirname, `../.env.${process.env.NODE_ENV}`);
 dotenv.config({ path: envPath });
 
 const envVarsSchema = Joi.object({
@@ -27,5 +27,5 @@ export const config = {
     jwt: {
         secret: envVars.ACCESS_TOKEN_SECRET,
         refreshExpirationDays: envVars.ACCESS_TOKEN_EXPIRY,
-      },
+    },
 }

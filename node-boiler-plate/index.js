@@ -4,7 +4,7 @@ import app from './app.js'
 
 let server;
 server = app.listen(config.PORT, () => {
-    logger.info('server started at PORT ', config.PORT)
+    logger.info(`Server started at PORT: ${config.PORT}`)
 })
 
 const exitHandler = (error) => {

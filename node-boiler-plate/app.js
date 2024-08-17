@@ -4,7 +4,7 @@ import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
 import cors from 'cors'
 import { ApiResponse } from './utils/index.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import { errorHandler, limiter } from './middleware/index.js';
 
 const app = express();
 
@@ -25,6 +25,9 @@ app.use(cors({
 
 // set logger for nodejs
 app.use(morganLogger)
+
+// rate limit api calls
+app.use(limiter);
 
 app.get('/', (req, res) => {
     ApiResponse(res, 200, { statuss: 'okk' })
