@@ -9,8 +9,8 @@ dotenv.config({ path: envPath });
 
 const envVarsSchema = Joi.object({
     NODE_ENV: Joi.string().valid('dev', 'prod').required(),
-    HOST: Joi.string().description('should be localhost'),
     PORT: Joi.number().default(3000),
+    MONGODB_URL: Joi.string().required().description('Mongo DB url'),
     ACCESS_TOKEN_SECRET: Joi.string().trim().required().description('JWT secret key'),
     ACCESS_TOKEN_EXPIRY: Joi.string().trim().required().description('JWT time exp'),
 }).unknown(); // allow unknown env variable
@@ -22,8 +22,15 @@ if (error) throw new Error(`Config validation error: ${error.message}`);
 
 export const config = {
     NODE_ENV: envVars.NODE_ENV,
-    HOST: envVars.HOST,
     PORT: envVars.PORT,
+    mongoose: {
+        url: envVars.MONGODB_URL,
+        options: {
+            useCreateIndex: true,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        },
+    },
     jwt: {
         secret: envVars.ACCESS_TOKEN_SECRET,
         refreshExpirationDays: envVars.ACCESS_TOKEN_EXPIRY,
