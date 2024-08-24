@@ -37,7 +37,7 @@ const userSchema = new Schema({
  * @returns {Promise<boolean>}
  */
 userSchema.static('isEmailTaken', async function isEmailTaken(email, exludeUserId) {
-    const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
+    const user = await this.findOne({ email, _id: { $ne: exludeUserId } });
     return !!user;
 });
 
