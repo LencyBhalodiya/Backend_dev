@@ -3,8 +3,8 @@ import { morganLogger } from './config/logger.js'
 import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
 import cors from 'cors'
-import { ApiResponse } from './utils/index.js';
 import { errorHandler, limiter } from './middleware/index.js';
+import routes from './routes/index.js'
 
 const app = express();
 
@@ -29,9 +29,8 @@ app.use(morganLogger)
 // rate limit api calls
 app.use(limiter);
 
-app.get('/', (req, res) => {
-    ApiResponse(res, 200, { statuss: 'okk' })
-})
+// v1 api routes
+app.use('/v1', routes);
 
 // global error handler
 app.use(errorHandler)
