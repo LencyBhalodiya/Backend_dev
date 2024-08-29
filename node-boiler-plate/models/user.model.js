@@ -46,9 +46,8 @@ userSchema.static('isEmailTaken', async function isEmailTaken(email, exludeUserI
  * @param {string} password
  * @returns {Promise<boolean>}
  */
-userSchema.method('isPasswordMatch', async function isPasswordMatch() {
-    const user = this;
-    return bcrypt.compare(password, user.password);
+userSchema.method('isPasswordMatch', async function isPasswordMatch(password) {
+    return bcrypt.compare(password, this.password);
 });
 
 /** @description encrypt password before saving in DB */

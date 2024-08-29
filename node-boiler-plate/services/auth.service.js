@@ -1,18 +1,31 @@
 import httpStatus from "http-status";
-import { User } from "../models/index.js";
 import { AppError } from "../utils/index.js";
+import { userService } from "./index.js";
 
 /**
- * Create a user
- * @param {Object} userBody
+ * check invalid schema and throws error
+ * @param {Object} schema
+ * @returns {null}
+ */
+const isValid = (schema, req) => {
+    const { error } = schema.validate(req.body);
+    if (error?.details?.[0]?.message)
+        throw new AppError(httpStatus.BAD_REQUEST, `${error.details[0].message}`);
+}
+
+/**
+ * Login with username and password
+ * @param {string} email
+ * @param {string} password
  * @returns {Promise<User>}
  */
-const createUser = async (userBody) => {
-    if (await User.isEmailTaken(userBody.email)) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Email already taken');
+const checkUserDetails = async (email, password) => {
+    const user = await userService.getUserByEmail(email, password);
+    console.log(user, await user.isPasswordMatch(password));
+    if (!user || !(await user.isPasswordMatch(password))) {
+        throw new AppError(httpStatus.UNAUTHORIZED, `Invalid Credientials`);
     }
-    const user = await User.create(userBody);
     return user;
-};
+}
 
-export { createUser }
+export { isValid, checkUserDetails }

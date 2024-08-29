@@ -13,4 +13,9 @@ const userRegister = Joi.object({
     name: Joi.string().min(4).required(),
 });
 
-export { userRegister };
+const userlogin = Joi.object({
+    email: Joi.string().required().email(),
+    password: Joi.string().min(7).required().custom(password),
+});
+
+export { userRegister, userlogin };
