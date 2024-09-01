@@ -33,6 +33,8 @@ export const config = {
     },
     jwt: {
         secret: envVars.ACCESS_TOKEN_SECRET,
-        refreshExpirationDays: envVars.ACCESS_TOKEN_EXPIRY,
+        accessExpirationMinutes: envVars.ACCESS_TOKEN_EXPIRY,
+        refreshExpirationDays: envVars.REFRESH_TOKEN_EXPIRY,
+
     },
 }

@@ -14,12 +14,13 @@ const tokenSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ['refresh', 'resetPassword'], 
+        enum: ['refresh', 'resetPassword'],
         required: true,
     },
-    expires: {
+    createdAt: {
         type: Date,
-        required: true,
+        default: Date.now,
+        expires: 30 * 86400,
     },
     blacklisted: {
         type: Boolean,

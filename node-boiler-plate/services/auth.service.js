@@ -1,6 +1,11 @@
 import httpStatus from "http-status";
+import { config } from "../config/config.js";
+import { User, Token } from '../models/index.js';
 import { AppError } from "../utils/index.js";
 import { userService } from "./index.js";
+import { logger } from '../config/logger.js'
+
+import jwt from 'jsonwebtoken';
 
 /**
  * check invalid schema and throws error
@@ -21,11 +26,61 @@ const isValid = (schema, req) => {
  */
 const checkUserDetails = async (email, password) => {
     const user = await userService.getUserByEmail(email, password);
-    console.log(user, await user.isPasswordMatch(password));
     if (!user || !(await user.isPasswordMatch(password))) {
         throw new AppError(httpStatus.UNAUTHORIZED, `Invalid Credientials`);
     }
     return user;
 }
 
-export { isValid, checkUserDetails }
+/**
+ * Save a token
+ * @param {string} token
+ * @param {ObjectId} userId
+ * @param {Moment} expires
+ * @param {string} type
+ * @param {boolean} [blacklisted]
+ * @returns {Promise<Token>}
+ */
+const saveToken = async (token, userId, type, blacklisted = false) => {
+    const tokenDoc = await Token.create({
+        token,
+        user: userId,
+        type,
+        blacklisted,
+    });
+    return tokenDoc;
+};
+
+/**
+* Generate token
+* @param {ObjectId} userId
+* @param {Moment} expires
+* @param {string} [secret]
+* @returns {string}
+*/
+const generateToken = (user, type, expiresIn) => {
+    const payload = {
+        id: user._id,
+        roles: user.role,
+        type,
+    };
+    return jwt.sign(payload, config.jwt.secret, { expiresIn: expiresIn });
+};
+
+/**
+ * Generate auth tokens
+ * @param {User} user
+ * @returns {Promise<Object>}
+ */
+const generateAuthToken = async (user) => {
+    try {
+        const accessToken = generateToken(user, 'access', config.jwt.accessExpirationMinutes);
+        const refreshToken = generateToken(user, 'refresh', config.jwt.refreshExpirationDays);
+        await saveToken(refreshToken, user._id, 'refresh');
+        return { accessToken, refreshToken };
+    } catch (error) {
+        logger.error(`Error in generateAuthToken: ${error.message}`)
+    }
+}
+
+export { checkUserDetails, generateAuthToken, isValid };
