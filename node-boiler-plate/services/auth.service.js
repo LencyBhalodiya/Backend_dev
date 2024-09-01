@@ -61,6 +61,7 @@ const saveToken = async (token, userId, type, blacklisted = false) => {
 const generateToken = (user, type, expiresIn) => {
     const payload = {
         id: user._id,
+        email: user.email,
         roles: user.role,
         type,
     };
@@ -83,4 +84,15 @@ const generateAuthToken = async (user) => {
     }
 }
 
-export { checkUserDetails, generateAuthToken, isValid };
+/**
+ * Logout
+ * @param {string} refreshToken
+ * @returns {Promise}
+ */
+const logout = async (refreshToken) => {
+    const refreshTokenDoc = await Token.findOneAndDelete({ token: refreshToken, type: 'refresh', blacklisted: false });
+    if (!refreshTokenDoc)
+        throw new AppError(httpStatus.NOT_FOUND, 'Refresh Token Not found');
+};
+
+export { checkUserDetails, generateAuthToken, isValid, logout };

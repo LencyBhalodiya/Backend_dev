@@ -17,4 +17,9 @@ const login = asyncHandler(async (req, res) => {
     res.status(httpStatus.CREATED).send({ user, tokens });
 });
 
-export { register, login }
+const logout = asyncHandler(async (req, res) => {
+    await authService.logout(req.body.refreshToken);
+    res.status(httpStatus.OK).send('logout successfully');
+});
+
+export { register, login, logout }
