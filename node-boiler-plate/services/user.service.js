@@ -25,4 +25,13 @@ const getUserByEmail = async (email) => {
     return User.findOne({ email });
 };
 
-export { createUser, getUserByEmail };
+/**
+ * Get user by id
+ * @param {ObjectId} id
+ * @returns {Promise<User>}
+ */
+const getUserById = async (id) => {
+    return User.findById(id);
+};
+
+export { createUser, getUserByEmail, getUserById };

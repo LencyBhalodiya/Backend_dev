@@ -69,6 +69,21 @@ const generateToken = (user, type, expiresIn) => {
 };
 
 /**
+ * Verify token and return token doc (or throw an error if it is not valid)
+ * @param {string} token
+ * @param {string} type
+ * @returns {Promise<Token>}
+ */
+const verifyToken = async (token, type) => {
+    const payload = jwt.verify(token, config.jwt.secret);
+    const tokenDoc = await Token.findOne({ token, type, user: payload.id, blacklisted: false });
+    if (!tokenDoc) {
+        throw new Error('Token not found');
+    }
+    return tokenDoc;
+};
+
+/**
  * Generate auth tokens
  * @param {User} user
  * @returns {Promise<Object>}
@@ -95,4 +110,24 @@ const logout = async (refreshToken) => {
         throw new AppError(httpStatus.NOT_FOUND, 'Refresh Token Not found');
 };
 
-export { checkUserDetails, generateAuthToken, isValid, logout };
+/**
+ * Refresh auth tokens
+ * @param {string} refreshToken
+ * @returns {Promise<Object>}
+ */
+const refreshAuth = async (refreshToken) => {
+    try {
+        const refreshTokenDoc = await verifyToken(refreshToken, 'refresh');
+        const user = await userService.getUserById(refreshTokenDoc.user);
+        if (!user) {
+            throw new Error();
+        }
+        await Token.findOneAndDelete({ token: refreshToken, type: 'refresh', blacklisted: false });
+        return generateAuthToken(user);
+    } catch (error) {
+        logger.error(`Error at refreshAuth :: ${error.message}`);
+        throw new AppError(httpStatus.UNAUTHORIZED, 'Please authenticate');
+    }
+};
+
+export { checkUserDetails, generateAuthToken, isValid, logout, refreshAuth };
