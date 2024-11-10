@@ -4,11 +4,11 @@ import { fileURLToPath } from 'url';
 import Joi from 'joi';
 
 const __dirname = fileURLToPath(import.meta.url);
-const envPath = join(__dirname, `../.env.${process.env.NODE_ENV.trim()}`);
+const envPath = join(__dirname, `../../.env.${process.env.NODE_ENV.trim()}`);
 dotenv.config({ path: envPath });
 
 const envVarsSchema = Joi.object({
-    NODE_ENV: Joi.string().valid('dev', 'prod').required(),
+    NODE_ENV: Joi.string().valid('dev', 'prod').trim().required(),
     PORT: Joi.number().default(3000),
     MONGODB_URL: Joi.string().required().description('Mongo DB url'),
     ACCESS_TOKEN_SECRET: Joi.string().trim().required().description('JWT secret key'),

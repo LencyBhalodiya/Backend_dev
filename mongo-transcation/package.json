@@ -8,8 +8,9 @@
     "node": ">=12.0.0"
   },
   "scripts": {
-    "dev": "NODE_ENV=dev nodemon -r dotenv/config index.js dotenv_config_path=.env.dev",
-    "prod": "NODE_ENV=prod node -r dotenv/config index.js dotenv_config_path=.env.prod"
+    "dev:linux": "NODE_ENV=dev nodemon -r dotenv/config index.js dotenv_config_path=.env.dev",
+    "prod": "NODE_ENV=prod node -r dotenv/config index.js dotenv_config_path=.env.prod",
+    "dev": "SET NODE_ENV=dev && nodemon index.js"
   },
   "keywords": [],
   "author": "",
@@ -24,8 +25,9 @@
     "helmet": "^7.1.0",
     "http-status": "^1.7.4",
     "joi": "^17.13.3",
-      "jsonwebtoken": "^9.0.2",
-      "mongoose": "^8.5.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0",
+    "mongoose": "^8.5.3",
     "morgan": "^1.10.0",
     "winston": "^3.14.1"
   },
